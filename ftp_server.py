@@ -57,23 +57,22 @@ def get_list_ftp(ftp, cwd, files = [], directories = []):
 '''
 
 
-def copyfolder():
+def copyfolder(SendProgram):
     final_buffer, programlist, programlocation = filelist.duplecheck()
-    copylocation = []
     ftplocation = "C:/Remote Install Software/"
-    selectedprogram = txtread()
+    selectedprogram = SendProgram
     selectedlocation = []
     temp_index = []
     success_sign = 10
 
-    for i in selectedprogram:
-        temp_index.append(programlist.index(selectedprogram[i]))
+    for i in range (0,len(selectedprogram)):
+        temp_index.append(int(programlist.index(selectedprogram[i])))
 
-    for i in temp_index:
-        t = int.temp_index[i]
-        selectedlocation[i] = programlocation[t]
+    for i in range (0,len(temp_index)):
+        t = temp_index[i]
+        selectedlocation.append(programlocation[t])
 
-    for i in selectedprogram:
+    for i in range (0,len(selectedprogram)):
         destlocation = ftplocation + str(selectedprogram[i])
         copy_tree(selectedlocation[i], destlocation)
 
