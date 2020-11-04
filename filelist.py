@@ -65,13 +65,17 @@ def filelist2():
 def duplecheck():
     temp_buffer1 = filelist1()
     temp_buffer2 = filelist2()
+
     programlist = []
     programlocation = []
 
     temp_buffer = temp_buffer1+temp_buffer2
 
-    temp_buffer = set(temp_buffer)
-    final_buffer = list(temp_buffer)
+    final_buffer = []
+
+    for i in range(0,len(temp_buffer)):
+        if temp_buffer[i] not in final_buffer:
+            final_buffer.append(temp_buffer[i])
 
     for i in range(0,len(final_buffer)):
         programlist.append(final_buffer[i][0])
