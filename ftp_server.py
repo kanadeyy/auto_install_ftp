@@ -7,6 +7,7 @@ import getipmac
 from distutils.dir_util import copy_tree
 import filelist
 import time
+import asyncio
 
 serverip, servermac = getipmac.getipmac()
 FTP_HOST = serverip
@@ -20,7 +21,7 @@ def makeFTPdir(): # FTP 서버 폴더 생성
     except OSError:
         pass
 
-def FTPserver(): # FTP서버 실행
+async def FTPserver(): # FTP서버 실행
     authorizer = DummyAuthorizer()
 
     authorizer.add_anonymous(FTP_DIRECTORY)
