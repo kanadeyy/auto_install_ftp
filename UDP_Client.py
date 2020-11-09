@@ -1,37 +1,29 @@
-#파일을 보냄
 import socket
-import threading
-import time
+import getipmac
 
 def received_data():
-    client = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP) # UDP
-    client.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    # Enable broadcasting mode
-    client.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+    IP_address, mymac = getipmac.getipmac()
+    list = []
+    checkmsg = "RIS"+ "," + IP_address
 
-    IP_address = []
-    PC_ID = []
-    order = 'key'
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    sock.setsockopt(socket.SOL_SOCKET,socket.SO_BROADCAST, 1)
+    sock.sendto(checkmsg.encode('utf-8'),('192.168.0.255',8731))
 
-    client.bind(('', 8371))
-    print("send broadcast!")
+    sock2 = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    sock2.bind((IP_address, 8732))
+    sock2.settimeout(3)
 
     while True:
-        #특정 메시지(key)를 보냄
-        # client.sendto(order.encode(),('<broadcast>',8731))
-        # print("특정 메세지 보냄")
+        try:
+            data, addr = sock2.recvfrom(1024)
+            list.append(data.decode('utf-8'))
+        except:
+            break
 
-        #서버로부터 IP,ID를 받음
-        data, addr = client.recvfrom(1024)
-        # print("received IP_address,PC_ID: %s"%data.decode())  # data.decode()
-        IPadd, PCID = data.decode().split(',')
-        print('IPaddress =', IPadd)
-        print('PC_ID =', PCID)
-        time.sleep(3)
-        IP_address.append(IPadd)
-        PC_ID.append(PCID)
-        client.sendto(data,addr)
+    sock.close()
+    sock2.close()
 
-    return IP_address, PC_ID
+    return list
 
-received_data()
+# received_data()
