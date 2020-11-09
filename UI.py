@@ -4,13 +4,17 @@ from PyQt5 import uic
 import filelist
 import ftp_server
 import errno, os, winreg
-from PIL import Image
+from os import unlink
+#from PIL import Image
 import time
 from multiprocessing import Process
+#import ftp_client
+import UDP_Client
 
 #UI파일 연결
 #단, UI파일은 Python 코드 파일과 같은 디렉토리에 위치해야한다.
 form_class = uic.loadUiType("grad_UI.ui")[0]
+global IPaddress_global
 
 #화면을 띄우는데 사용되는 Class 선언
 
@@ -24,6 +28,10 @@ class WindowClass(QMainWindow, form_class) :
         z, x, y = filelist.duplecheck()
         for i in x:
             self.ProgramList.addItem(i)  # ProgramList.py 에서의 list를 받아 Widget에 추가
+
+        global IPaddress_global
+        for i in IPaddress_global:
+            IPaddress_global = self.IpaddressList.addItem(i)
 
     def sendbuttonFunction(self):
         selected_Item = self.ProgramList.selectedItems()
@@ -40,23 +48,23 @@ class WindowClass(QMainWindow, form_class) :
         except OSError:
             pass
 
-        #filePath = 'C:/Remote Install Software/temp/sel_program.txt'
-        #f = open(filePath,"w")
-        #f.write(str(SendProgram))
-        #f.close()
+        oksign = ftp_server.copyfolder(SendProgram)
 
-        print(ftp_server.copyfolder(SendProgram))
+        #if oksign == 11:
 
         return SendProgram
 
 
 if __name__ == "__main__" :
 
-
     ftp_server.makeFTPdir()
     filelist.duplecheck()
-    th1 = Process(target= ftp_server.FTPserver)
+    
+    th1 = Process(target=ftp_server.FTPserver)
     th1.start()
+
+    global IPaddress_global
+    IPaddress_global = UDP_Client.received_data()
 
     #QApplication : 프로그램을 실행시켜주는 클래스
     app = QApplication(sys.argv)
@@ -69,4 +77,3 @@ if __name__ == "__main__" :
 
     #프로그램을 이벤트루프로 진입시키는(프로그램을 작동시키는) 코드
     app.exec_()
-
