@@ -10,6 +10,7 @@ import time
 from multiprocessing import Process
 # import ftp_client
 import UDP_Client
+import Sendlink
 
 # UI파일 연결
 # 단, UI파일은 Python 코드 파일과 같은 디렉토리에 위치해야한다.
@@ -47,16 +48,10 @@ class WindowClass(QMainWindow, form_class):
         for j in selected_IP:
             print(j.text())
             SendIP.append(j.text())
-        try:
-            if not os.path.exists('C:\Remote Install Software/temp'):
-                os.makedirs('C:\Remote Install Software/temp')
-        except OSError:
-            pass
 
-        oksign = ftp_server.copyfolder(SendProgram)
+        ftp_server.copyfolder(SendProgram)
+        Sendlink.sendlink(SendProgram, SendIP)
 
-        # if oksign == 11:
-        print(SendProgram, SendIP)
         return SendProgram, SendIP
 
 
