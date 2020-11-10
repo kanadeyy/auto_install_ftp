@@ -25,16 +25,6 @@
    <property name="title">
     <string>PC ID변경</string>
    </property>
-   <widget class="QLineEdit" name="ipchangeedit">
-    <property name="geometry">
-     <rect>
-      <x>40</x>
-      <y>30</y>
-      <width>113</width>
-      <height>20</height>
-     </rect>
-    </property>
-   </widget>
    <widget class="QPushButton" name="okbutton">
     <property name="geometry">
      <rect>
@@ -46,6 +36,22 @@
     </property>
     <property name="text">
      <string>확인</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="IP_Change_Edit">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>30</y>
+      <width>151</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="frame">
+     <bool>true</bool>
+    </property>
+    <property name="readOnly">
+     <bool>false</bool>
     </property>
    </widget>
   </widget>
