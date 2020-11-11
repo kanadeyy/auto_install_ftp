@@ -10,13 +10,13 @@ import time
 serverip, servermac = getipmac.getipmac()
 FTP_HOST = serverip
 FTP_PORT = 21
-FTP_DIRECTORY = os.path.join(os.getcwd(), "C:\Remote Install Software")
+FTP_DIRECTORY = os.path.join(os.getcwd(), "C:\Remote Install Software/FTPserver")
 
 
 def makeFTPdir(): # FTP 서버 폴더 생성
     try:
-        if not os.path.exists('C:\Remote Install Software'):
-            os.makedirs('C:\Remote Install Software')
+        if not os.path.exists('C:\Remote Install Software/FTPserver'):
+            os.makedirs('C:\Remote Install Software/FTPserver')
     except OSError:
         pass
 
@@ -43,7 +43,7 @@ def FTPserver(): # FTP 서버 실행
 
 def copyfolder(SendProgram): # FTP 서버로 지정할 파일에 UI에서 선택한 파일을 복사
     final_buffer, programlist, programlocation = filelist.duplecheck()
-    ftplocation = "C:/Remote Install Software/"
+    ftplocation = "C:/Remote Install Software/FTPserver/"
     selectedprogram = SendProgram
     selectedlocation = []
     temp_index = []

@@ -9,15 +9,16 @@ import errno, os, winreg
 from os import unlink
 # from PIL import Image
 import time
-from multiprocessing import Process, freeze_support
 # import ftp_client
 import UDP_Client
 import Sendlink
+import getipmac
+import threading
 
 
 # UI파일 연결
 # 단, UI파일은 Python 코드 파일과 같은 디렉토리에 위치해야한다.
-form_class = uic.loadUiType("C:/Users/jeon1/PycharmProjects/filelist/grad_UI.ui")[0]
+form_class = uic.loadUiType("grad_UI.ui")[0]
 global IPaddress_global
 
 
@@ -37,7 +38,6 @@ class WindowClass(QMainWindow, form_class):
         global IPaddress_global
         for i in IPaddress_global:
             IPaddress_global = self.IpaddressList.addItem(i)
-
 
         self.tray_icon = QSystemTrayIcon(self)
         self.tray_icon.setIcon(QIcon('icon.png'))
@@ -75,25 +75,22 @@ class WindowClass(QMainWindow, form_class):
         event.ignore()
         self.hide()
 
-    def quit(self):
-        th1.close()
-
 
 if __name__ == "__main__":
 
-    freeze_support()
+    ftp_server.makeFTPdir()
     global IPaddress_global
     IPaddress_global = UDP_Client.received_data()
 
-    th1 = Process(target=ftp_server.FTPserver)
-    th1.start()
+    srv = threading.Thread(target=ftp_server.FTPserver)
+    srv.daemon = True
+    srv.start()
     # QApplication : 프로그램을 실행시켜주는 클래스
     app = QApplication(sys.argv)
 
     # WindowClass의 인스턴스 생성
     myWindow = WindowClass()
 
-    ftp_server.makeFTPdir()
     filelist.duplecheck()
 
     # 프로그램 화면을 보여주는 코드
