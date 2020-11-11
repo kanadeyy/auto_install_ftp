@@ -1,7 +1,7 @@
 import socket
 import getipmac
 
-def received_data():
+def received_data(): # RIS 메시지 broadcasting 한 뒤 ack를 list로 저장
     IP_address, mymac = getipmac.getipmac()
     list = []
     checkmsg = "RIS"+ "," + IP_address
@@ -25,5 +25,3 @@ def received_data():
     sock2.close()
 
     return list
-
-# received_data()

@@ -1,7 +1,7 @@
 import socket
 import pickle
 
-def sendlink(SendProgram,selectedip):
+def sendlink(SendProgram,selectedip): # client로 udp를 이용하여 받아야 하는 파일 정보 전송
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     data = pickle.dumps(SendProgram)
     sendip = []

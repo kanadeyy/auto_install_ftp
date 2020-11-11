@@ -1,6 +1,6 @@
 import errno, os, winreg
 
-def filelist1():
+def filelist1(): # 레지스트리에서 프로그램의 이름과 설치 경로를 구하는 함수
     proc_Arch = os.environ['PROCESSOR_ARCHITECTURE'].lower()
     proc_Arch64 = os.environ['PROCESSOR_ARCHITEW6432'].lower()
     programbuffer = []
@@ -31,7 +31,7 @@ def filelist1():
 
     return programbuffer
 
-def filelist2():
+def filelist2(): # 레지스트리에서 프로그램의 이름과 설치 경로를 구하는 함수
     proc_Arch = os.environ['PROCESSOR_ARCHITECTURE'].lower()
     proc_Arch64 = os.environ['PROCESSOR_ARCHITEW6432'].lower()
     programbuffer = []
@@ -62,7 +62,7 @@ def filelist2():
 
     return programbuffer
 
-def duplecheck():
+def duplecheck(): # 레지스트리에서 프로그램의 이름과 설치 경로를 구하는 함수
     temp_buffer1 = filelist1()
     temp_buffer2 = filelist2()
 

@@ -2,7 +2,6 @@ import os
 from pyftpdlib.authorizers import DummyAuthorizer
 from pyftpdlib.handlers import FTPHandler
 from pyftpdlib.servers import FTPServer
-from ftplib import FTP
 import getipmac
 from distutils.dir_util import copy_tree
 import filelist
@@ -10,8 +9,9 @@ import time
 
 serverip, servermac = getipmac.getipmac()
 FTP_HOST = serverip
-FTP_PORT = 8730
+FTP_PORT = 21
 FTP_DIRECTORY = os.path.join(os.getcwd(), "C:\Remote Install Software")
+
 
 def makeFTPdir(): # FTP 서버 폴더 생성
     try:
@@ -20,7 +20,8 @@ def makeFTPdir(): # FTP 서버 폴더 생성
     except OSError:
         pass
 
-def FTPserver(): # FTP서버 실행
+
+def FTPserver(): # FTP 서버 실행
     authorizer = DummyAuthorizer()
 
     authorizer.add_anonymous(FTP_DIRECTORY)
@@ -39,25 +40,8 @@ def FTPserver(): # FTP서버 실행
 
     server.serve_forever()
 
-'''
-def get_list_ftp(ftp, cwd, files = [], directories = []):
-    data = []
-    ftp.cwd(cwd)
-    ftp.dir(data.append)
-    for item in data:
-        pos = item.rfind(' ')
-        name = cwd + item[pos+1:]
-        if item.find('<DIR>') > -1:
-            directories.append(name)
-            get_list_ftp(ftp, name+'/', files, directories)
-        else:
-            files.append(name)
 
-    return files, directories
-'''
-
-
-def copyfolder(SendProgram):
+def copyfolder(SendProgram): # FTP 서버로 지정할 파일에 UI에서 선택한 파일을 복사
     final_buffer, programlist, programlocation = filelist.duplecheck()
     ftplocation = "C:/Remote Install Software/"
     selectedprogram = SendProgram
@@ -77,15 +61,13 @@ def copyfolder(SendProgram):
         copy_tree(selectedlocation[i], destlocation)
 
         while True:
-            time.sleep(10)
+            time.sleep(5)
             if get_dir_size(path=selectedlocation[i]) == get_dir_size(path=destlocation):
                 break
             else:
                 continue
 
-    success_sign = 11
-
-    return success_sign
+    return selectedlocation
 
 
 def get_dir_size(path='.'): # 폴더 사이즈 구하기
@@ -97,9 +79,3 @@ def get_dir_size(path='.'): # 폴더 사이즈 구하기
             elif entry.is_dir():
                 total += get_dir_size(entry.path)
     return total
-
-def txtread():
-    r = open('C:/Remote Install Software/temp/sel_program.txt', mode='rt', encoding='utf-8')
-    link = r.readlines()
-
-    return link

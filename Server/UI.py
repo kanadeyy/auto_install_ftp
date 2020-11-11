@@ -1,20 +1,23 @@
 import sys
 from PyQt5.QtWidgets import *
 from PyQt5 import uic
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *
 import filelist
 import ftp_server
 import errno, os, winreg
 from os import unlink
 # from PIL import Image
 import time
-from multiprocessing import Process
+from multiprocessing import Process, freeze_support
 # import ftp_client
 import UDP_Client
 import Sendlink
 
+
 # UI파일 연결
 # 단, UI파일은 Python 코드 파일과 같은 디렉토리에 위치해야한다.
-form_class = uic.loadUiType("grad_UI.ui")[0]
+form_class = uic.loadUiType("C:/Users/jeon1/PycharmProjects/filelist/grad_UI.ui")[0]
 global IPaddress_global
 
 
@@ -35,7 +38,21 @@ class WindowClass(QMainWindow, form_class):
         for i in IPaddress_global:
             IPaddress_global = self.IpaddressList.addItem(i)
 
+
+        self.tray_icon = QSystemTrayIcon(self)
+        self.tray_icon.setIcon(QIcon('icon.png'))
+        show_action = QAction("열기", self)
+        quit_action = QAction("종료", self)
+        show_action.triggered.connect(self.show)
+        quit_action.triggered.connect(qApp.quit)
+        tray_menu = QMenu()
+        tray_menu.addAction(show_action)
+        tray_menu.addAction(quit_action)
+        self.tray_icon.setContextMenu(tray_menu)
+        self.tray_icon.show()
+
     def sendbuttonFunction(self):
+        self.hide()
         selected_Item = self.ProgramList.selectedItems()
         SendProgram = []
         for i in selected_Item:
@@ -54,22 +71,30 @@ class WindowClass(QMainWindow, form_class):
 
         return SendProgram, SendIP
 
+    def closeEvent(self, event):
+        event.ignore()
+        self.hide()
+
+    def quit(self):
+        th1.close()
+
 
 if __name__ == "__main__":
-    ftp_server.makeFTPdir()
-    filelist.duplecheck()
 
-    th1 = Process(target=ftp_server.FTPserver)
-    th1.start()
-
+    freeze_support()
     global IPaddress_global
     IPaddress_global = UDP_Client.received_data()
 
+    th1 = Process(target=ftp_server.FTPserver)
+    th1.start()
     # QApplication : 프로그램을 실행시켜주는 클래스
     app = QApplication(sys.argv)
 
     # WindowClass의 인스턴스 생성
     myWindow = WindowClass()
+
+    ftp_server.makeFTPdir()
+    filelist.duplecheck()
 
     # 프로그램 화면을 보여주는 코드
     myWindow.show()
