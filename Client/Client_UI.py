@@ -4,7 +4,12 @@ from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import *
 from PyQt5 import uic
 import getipmac
-import PC_ID
+from client import PC_ID
+from client import UDP_Server
+from client import receivelink
+from client import ftp_client
+import threading
+
 
 form_class = uic.loadUiType("Client_UI.ui")[0]
 
@@ -59,8 +64,18 @@ class WindowClass(QMainWindow, form_class):
         self.hide()
 
 
+def protocol():
+    ftp_client.makeAppdir()
+    ID = PC_ID.file_read()
+    Serverip = UDP_Server.send_data(ID)
+    recv_link = receivelink.receivelink(Serverip)
+    ftp_client.FTP_download(Serverip,recv_link)
 
 if __name__ == "__main__":
+
+    srv = threading.Thread(target=protocol)
+    srv.daemon = True
+    srv.start()
 
     # QApplication : 프로그램을 실행시켜주는 클래스
     app = QApplication(sys.argv)
