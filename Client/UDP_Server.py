@@ -1,9 +1,8 @@
-#파일을 받음
 import socket
 import getipmac
 import time
 
-def send_data(ID):
+def send_data(ID): # 서버로 부터 RIS 메시지 수신시 자신의 IP와 PC의 ID 송신
     IP_address, mymac = getipmac.getipmac()
     PC_ID = ID
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -22,4 +21,4 @@ def send_data(ID):
         print('데이터 보냄')
         sock2.close()
 
-send_data('PC1')
+    return Serverip
