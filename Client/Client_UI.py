@@ -2,28 +2,16 @@ import sys
 from PyQt5.QtWidgets import *
 from PyQt5 import uic
 import getipmac
-
+import PC_ID
 
 form_class = uic.loadUiType("Client_UI.ui")[0]
-
-
-# fr = open('PC_ID.txt','r')
-# fw = open('PC_ID.txt','w')
-# text = fr.read()
-#
-# if text == 'temp':
-#     ID = 'unknown'
-# elif text != 0:
-#     ID = text
-#
-# print('ID = '+ID)
 
 class WindowClass(QMainWindow, form_class):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
 
-        ID = 'unknown'
+        ID = PC_ID.file_read()
         IP,MAC = getipmac.getipmac()
         self.iptext.append(IP)
         self.idtext.append(ID)
@@ -33,10 +21,11 @@ class WindowClass(QMainWindow, form_class):
 
     def okbuttonFunction(self):
         ID_ = self.IP_Change_Edit.text()
+        PC_ID.file_modify(ID_)
         self.idtext.clear()
         self.IP_Change_Edit.clear()
         self.idtext.append(ID_)
-        # fw.write(ID_)
+
 
 
 if __name__ == "__main__":
