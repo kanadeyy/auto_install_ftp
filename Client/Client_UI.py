@@ -4,10 +4,10 @@ from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import *
 from PyQt5 import uic
 import getipmac
-from client import PC_ID
-from client import UDP_Server
-from client import receivelink
-from client import ftp_client
+from Client import PC_ID
+from Client import UDP_Server
+from Client import receivelink
+from Client import ftp_client
 import threading
 
 
@@ -18,6 +18,10 @@ class WindowClass(QMainWindow, form_class):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
+
+        #아이콘, 제목
+        self.setWindowTitle("Remote install software")
+        self.setWindowIcon(QIcon('icon.png'))
 
         ID = PC_ID.file_read()
         IP,MAC = getipmac.getipmac()
@@ -49,7 +53,7 @@ class WindowClass(QMainWindow, form_class):
     def okbuttonFunction(self):
         ID_ = self.IP_Change_Edit.text()
         if not ID_:
-            QMessageBox.about(self,"경고","메세지를 입력하세요") #https://pythonprogramminglanguage.com/pyqt5-message-box/
+            QMessageBox.warning(self,"Remote Install Software","메세지를 입력하세요") #https://pythonprogramminglanguage.com/pyqt5-message-box/
 
         else :
             PC_ID.file_modify(ID_)
