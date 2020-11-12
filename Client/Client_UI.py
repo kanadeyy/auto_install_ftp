@@ -14,12 +14,6 @@ import threading
 form_class = uic.loadUiType("Client_UI.ui")[0]
 
 
-def messageBox(self):
-    msgBox = QMessageBox()  # https://www.jbmpa.com/pyside2/8
-    msgBox.setWindowTitle("Alert")
-    msgBox.setIcon(QMessageBox.Information)
-    msgBox.setInformativeText("내용을 입력하세요")
-
 class WindowClass(QMainWindow, form_class):
     def __init__(self):
         super().__init__()
@@ -34,6 +28,7 @@ class WindowClass(QMainWindow, form_class):
 
         self.okbutton.clicked.connect(self.okbuttonFunction)
         self.IP_Change_Edit.returnPressed.connect(self.okbuttonFunction)
+
 
         #트레이아이콘
         self.tray_icon = QSystemTrayIcon(self)
@@ -91,7 +86,7 @@ if __name__ == "__main__":
     myWindow = WindowClass()
 
     # 프로그램 화면을 보여주는 코드
-    myWindow.show()
+    #myWindow.show()
 
     # 프로그램을 이벤트루프로 진입시키는(프로그램을 작동시키는) 코드
     app.exec_()
