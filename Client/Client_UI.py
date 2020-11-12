@@ -48,6 +48,9 @@ class WindowClass(QMainWindow, form_class):
         self.tray_icon.setContextMenu(tray_menu)
         self.tray_icon.show()
 
+    def notify(self, title, message):
+        self.tray_icon.showMessage(title, message, 1, 3000)
+
     def okbuttonFunction(self):
         ID_ = self.IP_Change_Edit.text()
         if not ID_:
@@ -68,8 +71,12 @@ def protocol():
     ftp_client.makeAppdir()
     ID = PC_ID.file_read()
     Serverip = UDP_Server.send_data(ID)
-    recv_link = receivelink.receivelink(Serverip)
-    ftp_client.FTP_download(Serverip,recv_link)
+    traynotification = WindowClass()
+    while True:
+        recv_link = receivelink.receivelink(Serverip)
+        traynotification.notify("RIS Client","설치 시작")
+        ftp_client.FTP_download(Serverip,recv_link)
+        traynotification.notify("RIS Client", "설치 완료")
 
 if __name__ == "__main__":
 
