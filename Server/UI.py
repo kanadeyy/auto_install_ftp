@@ -51,6 +51,9 @@ class WindowClass(QMainWindow, form_class):
         self.tray_icon.setContextMenu(tray_menu)
         self.tray_icon.show()
 
+    def notify(self, title, message):
+        self.tray_icon.showMessage(title, message, 1, 3000)
+
     def sendbuttonFunction(self):
         self.hide()
         selected_Item = self.ProgramList.selectedItems()
@@ -65,9 +68,10 @@ class WindowClass(QMainWindow, form_class):
         for j in selected_IP:
             print(j.text())
             SendIP.append(j.text())
-
+        self.notify("RIS Server", "파일 업로드 중")
         ftp_server.copyfolder(SendProgram)
         Sendlink.sendlink(SendProgram, SendIP)
+        self.notify("RIS Server", "업로드 완료")
 
         return SendProgram, SendIP
 
