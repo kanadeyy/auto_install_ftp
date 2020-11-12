@@ -1,18 +1,14 @@
 import sys
+
 from PyQt5.QtWidgets import *
 from PyQt5 import uic
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
+
 import filelist
 import ftp_server
-import errno, os, winreg
-from os import unlink
-# from PIL import Image
-import time
-# import ftp_client
 import UDP_Client
 import Sendlink
-import getipmac
 import threading
 
 
@@ -29,12 +25,26 @@ class WindowClass(QMainWindow, form_class):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
+        
+        #배경만들기
+        image = QImage("표지.png")
+        palette = QPalette()
+        palette.setBrush(10, QBrush(image))
+        self.setPalette(palette)
 
+        # 아이콘, 제목 바꾸기
+        self.setWindowTitle("Remote install software")
+        self.setWindowIcon(QIcon('icon.png'))
+
+        #그룹박스 안에 배경색 바꾸기
+        
+        #파일리스트, IPADDRESS리스트 생성
         self.sendbutton.clicked.connect(self.sendbuttonFunction)
         z, x, y = filelist.duplecheck()
         for i in x:
             self.ProgramList.addItem(i)  # ProgramList.py 에서의 list를 받아 Widget에 추가
-
+        
+        
         global IPaddress_global
         for i in IPaddress_global:
             IPaddress_global = self.IpaddressList.addItem(i)
@@ -55,25 +65,36 @@ class WindowClass(QMainWindow, form_class):
         self.tray_icon.showMessage(title, message, 1, 3000)
 
     def sendbuttonFunction(self):
-        self.hide()
-        selected_Item = self.ProgramList.selectedItems()
-        SendProgram = []
-        for i in selected_Item:
-            print(i.text())  # 아이템을 선택하고 send버튼을 눌렀을 때 선택된 아이템들을 출력
-            temp = i.text()
-            SendProgram.append(temp)
-
         selected_IP = self.IpaddressList.selectedItems()
-        SendIP = []
-        for j in selected_IP:
-            print(j.text())
-            SendIP.append(j.text())
-        self.notify("RIS Server", "파일 업로드 중")
-        ftp_server.copyfolder(SendProgram)
-        Sendlink.sendlink(SendProgram, SendIP)
-        self.notify("RIS Server", "업로드 완료")
+        selected_Item = self.ProgramList.selectedItems()
+        if not selected_Item:
+            if not selected_IP:
+                QMessageBox.warning(self, "Remote Install Software", "내용을 선택하세요")
+            else:
+                QMessageBox.warning(self, "Remote Install Software", "프로그램을 선택하세요")
 
-        return SendProgram, SendIP
+        elif not selected_IP:
+            QMessageBox.warning(self, "Remote Install Software", "PC를 선택하세요")
+            
+        else:
+            self.hide()
+            SendProgram = []
+            for i in selected_Item:
+                print(i.text())  # 아이템을 선택하고 send버튼을 눌렀을 때 선택된 아이템들을 출력
+                temp = i.text()
+                SendProgram.append(temp)
+                
+            SendIP = []
+            for j in selected_IP:
+                print(j.text())
+                SendIP.append(j.text())
+                
+            self.notify("RIS Server", "파일 업로드 중")
+            ftp_server.copyfolder(SendProgram)
+            Sendlink.sendlink(SendProgram, SendIP)
+            self.notify("RIS Server", "업로드 완료")
+
+            return SendProgram, SendIP
 
     def closeEvent(self, event):
         event.ignore()
