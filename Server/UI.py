@@ -11,7 +11,6 @@ import UDP_Client
 import Sendlink
 import threading
 
-
 # UI파일 연결
 # 단, UI파일은 Python 코드 파일과 같은 디렉토리에 위치해야한다.
 form_class = uic.loadUiType("grad_UI.ui")[0]
@@ -25,9 +24,9 @@ class WindowClass(QMainWindow, form_class):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
-        
-        #배경만들기
-        image = QImage("표지.png")
+
+        # 배경만들기
+        image = QImage("thumbnail.png")
         palette = QPalette()
         palette.setBrush(10, QBrush(image))
         self.setPalette(palette)
@@ -36,15 +35,14 @@ class WindowClass(QMainWindow, form_class):
         self.setWindowTitle("Remote install software")
         self.setWindowIcon(QIcon('icon.png'))
 
-        #그룹박스 안에 배경색 바꾸기
-        
-        #파일리스트, IPADDRESS리스트 생성
+        # 그룹박스 안에 배경색 바꾸기
+
+        # 파일리스트, IPADDRESS리스트 생성
         self.sendbutton.clicked.connect(self.sendbuttonFunction)
         z, x, y = filelist.duplecheck()
         for i in x:
             self.ProgramList.addItem(i)  # ProgramList.py 에서의 list를 받아 Widget에 추가
-        
-        
+
         global IPaddress_global
         for i in IPaddress_global:
             IPaddress_global = self.IpaddressList.addItem(i)
@@ -75,7 +73,7 @@ class WindowClass(QMainWindow, form_class):
 
         elif not selected_IP:
             QMessageBox.warning(self, "Remote Install Software", "PC를 선택하세요")
-            
+
         else:
             self.hide()
             SendProgram = []
@@ -83,12 +81,12 @@ class WindowClass(QMainWindow, form_class):
                 print(i.text())  # 아이템을 선택하고 send버튼을 눌렀을 때 선택된 아이템들을 출력
                 temp = i.text()
                 SendProgram.append(temp)
-                
+
             SendIP = []
             for j in selected_IP:
                 print(j.text())
                 SendIP.append(j.text())
-                
+
             self.notify("RIS Server", "파일 업로드 중")
             ftp_server.copyfolder(SendProgram)
             Sendlink.sendlink(SendProgram, SendIP)
@@ -102,7 +100,6 @@ class WindowClass(QMainWindow, form_class):
 
 
 if __name__ == "__main__":
-
     ftp_server.makeFTPdir()
     global IPaddress_global
     IPaddress_global = UDP_Client.received_data()
