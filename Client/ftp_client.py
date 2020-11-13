@@ -2,12 +2,14 @@ from ftplib import FTP
 import os
 import sys
 
+
 def makeAppdir(): # Application을 다운 받을 폴더 생성
     try:
         if not os.path.exists('C:\Remote Install Software/Applications'):
             os.makedirs('C:\Remote Install Software/Applications')
     except OSError:
         pass
+
 
 def get_list_ftp(ftp, cwd, files = [], directories = []): # ftp 서버의 특정 파일 내부의 파일과 디렉토리를 구함
     data = []
@@ -50,5 +52,3 @@ def FTP_download(serverip, down_list): # ftp 서버로부터 특정 디렉토리
                 with open(download_path + file, 'wb') as localfile:
                     ftp.cwd("/"+i)
                     ftp.retrbinary('RETR ' + "/" + file, localfile.write)
-
-            print('Download file is ' + file)

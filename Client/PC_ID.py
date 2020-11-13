@@ -1,4 +1,3 @@
-import getipmac
 
 def file_read() :
     fr = open('PC_ID.txt','r')
@@ -9,7 +8,6 @@ def file_read() :
     elif ID=='0':
         print('파일에 내용이 없습니다')
 
-    print(ID)
     fr.close()
 
     return ID

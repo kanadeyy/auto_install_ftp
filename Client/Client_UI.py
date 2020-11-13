@@ -4,14 +4,14 @@ from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import *
 from PyQt5 import uic
 import getipmac
-from Client import PC_ID
-from Client import UDP_Server
-from Client import receivelink
-from Client import ftp_client
+import PC_ID
+import UDP_Server
+import receivelink
+import ftp_client
 import threading
 
 
-form_class = uic.loadUiType("Client_UI.ui")[0]
+form_class = uic.loadUiType("test.ui")[0]
 
 
 class WindowClass(QMainWindow, form_class):
