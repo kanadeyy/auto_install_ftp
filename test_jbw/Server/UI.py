@@ -15,7 +15,6 @@ import threading
 # UI파일 연결
 # 단, UI파일은 Python 코드 파일과 같은 디렉토리에 위치해야한다.
 form_class = uic.loadUiType("grad_UI.ui")[0]
-form_class1 = uic.loadUiType("image_UI.ui")[0]
 
 global IPaddress_global
 
