@@ -1,6 +1,6 @@
 from ftplib import FTP
 import os
-import sys
+
 
 def makeAppdir(): # Application을 다운 받을 폴더 생성
     try:
@@ -9,13 +9,19 @@ def makeAppdir(): # Application을 다운 받을 폴더 생성
     except OSError:
         pass
 
+
 def get_list_ftp(ftp, cwd, files = [], directories = []): # ftp 서버의 특정 파일 내부의 파일과 디렉토리를 구함
     data = []
+    qwert = []
     ftp.cwd(cwd)
     ftp.dir(data.append)
-    for item in data:
-        pos = item.rfind(' ')
-        name = cwd + "/" + item[pos+1:]
+    data_1 = ftp.nlst()
+    for i in range (0,len(data)):
+        qwert.append(data[i] +"thisisRISdir" + data_1[i])
+
+    for item in qwert:
+        pos = item.rfind('thisisRISdir')
+        name = cwd + "/" + item[pos+12:]
         dircheck = item[0:1]
         if dircheck == "d":
             directories.append(name)
@@ -50,5 +56,3 @@ def FTP_download(serverip, down_list): # ftp 서버로부터 특정 디렉토리
                 with open(download_path + file, 'wb') as localfile:
                     ftp.cwd("/"+i)
                     ftp.retrbinary('RETR ' + "/" + file, localfile.write)
-
-            print('Download file is ' + file)
