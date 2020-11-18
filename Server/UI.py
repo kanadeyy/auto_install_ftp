@@ -1,10 +1,15 @@
 import sys
 
 from PyQt5.QtWidgets import *
-from PyQt5 import uic
+from PyQt5 import uic, QtCore
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
+# from PySide2.QtGui import *
+# from PySide2.QtCore import *
+# from PySide2.QtWidgets import *
 
+
+import thumnail
 import filelist
 import ftp_server
 import UDP_Client
@@ -14,6 +19,7 @@ import threading
 # UI파일 연결
 # 단, UI파일은 Python 코드 파일과 같은 디렉토리에 위치해야한다.
 form_class = uic.loadUiType("grad_UI.ui")[0]
+
 global IPaddress_global
 
 
@@ -34,31 +40,52 @@ class WindowClass(QMainWindow, form_class):
         # 아이콘, 제목 바꾸기
         self.setWindowTitle("Remote install software")
         self.setWindowIcon(QIcon('icon.png'))
+        
+         #최대화 버튼 없애고 화면크기 고정
+        self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
 
-        # 그룹박스 안에 배경색 바꾸기
+        #Close button 이미지 만들기
+        self.Closebutton.setStyleSheet('image:url(Close.png);border:0px;')
 
-        # 파일리스트, IPADDRESS리스트 생성
+        # 버튼 이벤트 핸들러 생성
         self.sendbutton.clicked.connect(self.sendbuttonFunction)
-        z, x, y = filelist.duplecheck()
-        for i in x:
-            self.ProgramList.addItem(i)  # ProgramList.py 에서의 list를 받아 Widget에 추가
+        
+        self.Closebutton.clicked.connect(self.ClosebuttonFunction)
 
-        global IPaddress_global
-        for i in IPaddress_global:
-            IPaddress_global = self.IpaddressList.addItem(i)
-
+        #UI에 프로그램과 IP주소 추가
+        self.addProgram()
+        self.addIP()
+        
+        # 트레이 아이콘
         self.tray_icon = QSystemTrayIcon(self)
+        self.tray_icon.setToolTip("RIS Server")
         self.tray_icon.setIcon(QIcon('icon.png'))
         show_action = QAction("열기", self)
         quit_action = QAction("종료", self)
-        show_action.triggered.connect(self.show)
+        show_action.triggered.connect(self.trayopenclick)
         quit_action.triggered.connect(qApp.quit)
         tray_menu = QMenu()
         tray_menu.addAction(show_action)
         tray_menu.addAction(quit_action)
         self.tray_icon.setContextMenu(tray_menu)
-        self.tray_icon.show()
+        trayDouble = self.tray_icon.activated
+        trayDouble.connect(self.trayDoubleclick)
+        # test = self.tray_icon.activated([2])
+        # test.triggered.connect(self.show)
 
+    def trayDoubleclick(self, reason):
+        if reason == 2:
+            self.show()
+            self.tray_icon.hide()
+
+    def trayopenclick(self):
+        self.show()
+        self.tray_icon.hide()
+
+    def ClosebuttonFunction(self):
+        self.hide()
+        self.tray_icon.show()
+    
     def notify(self, title, message):
         self.tray_icon.showMessage(title, message, 1, 3000)
 
@@ -76,6 +103,7 @@ class WindowClass(QMainWindow, form_class):
 
         else:
             self.hide()
+            self.tray_icon.show()
             SendProgram = []
             for i in selected_Item:
                 print(i.text())  # 아이템을 선택하고 send버튼을 눌렀을 때 선택된 아이템들을 출력
@@ -86,19 +114,30 @@ class WindowClass(QMainWindow, form_class):
             for j in selected_IP:
                 print(j.text())
                 SendIP.append(j.text())
-
+                
+            #보내기버튼 누르면 선택된 아이템 해제
+            self.ProgramList.clear()
+            self.addProgram()
+            self.IpaddressList.clear()
+            self.addIP()
+            
             self.notify("RIS Server", "파일 업로드 중")
             ftp_server.copyfolder(SendProgram)
             Sendlink.sendlink(SendProgram, SendIP)
             self.notify("RIS Server", "업로드 완료")
-
+                              
             return SendProgram, SendIP
 
-    def closeEvent(self, event):
-        event.ignore()
-        self.hide()
+    def addProgram(self):
+        z, x, y = filelist.duplecheck()
+        for i in x:
+            self.ProgramList.addItem(i)
 
-
+    def addIP(self):
+        global IPaddress_global
+        for i in IPaddress_global:
+            self.IpaddressList.addItem(i)    
+    
 if __name__ == "__main__":
     ftp_server.makeFTPdir()
     global IPaddress_global
@@ -107,6 +146,8 @@ if __name__ == "__main__":
     srv = threading.Thread(target=ftp_server.FTPserver)
     srv.daemon = True
     srv.start()
+    
+    thumnail.Open_IntroImage()    
     # QApplication : 프로그램을 실행시켜주는 클래스
     app = QApplication(sys.argv)
 

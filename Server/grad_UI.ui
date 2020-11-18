@@ -122,17 +122,37 @@
     <rect>
      <x>270</x>
      <y>350</y>
-     <width>101</width>
+     <width>91</width>
      <height>21</height>
     </rect>
+   </property>
+   <property name="cursor">
+    <cursorShape>PointingHandCursor</cursorShape>
    </property>
    <property name="text">
     <string>보내기</string>
    </property>
   </widget>
+  <widget class="QPushButton" name="Closebutton">
+   <property name="geometry">
+    <rect>
+     <x>641</x>
+     <y>10</y>
+     <width>20</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="cursor">
+    <cursorShape>PointingHandCursor</cursorShape>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
   <zorder>groupBox_2</zorder>
   <zorder>groupBox</zorder>
   <zorder>sendbutton</zorder>
+  <zorder>Closebutton</zorder>
  </widget>
  <resources/>
  <connections/>

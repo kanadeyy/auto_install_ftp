@@ -20,7 +20,7 @@ def received_data(): # RIS 메시지 broadcasting 한 뒤 ack를 list로 저장
             list.append(data.decode('utf-8'))
         except:
             break
-
+            
     sock.close()
     sock2.close()
 

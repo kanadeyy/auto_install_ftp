@@ -1,4 +1,3 @@
-
 def file_read() :
     fr = open('PC_ID.txt','r')
     ID = fr.read()

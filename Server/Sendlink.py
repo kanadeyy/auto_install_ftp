@@ -11,5 +11,4 @@ def sendlink(SendProgram,selectedip): # client로 udp를 이용하여 받아야 
 
     for i in sendip:
         sock.sendto(data, (i, 8733))
-
     sock.close()
