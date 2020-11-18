@@ -1,9 +1,13 @@
 import sys
 
 from PyQt5.QtWidgets import *
-from PyQt5 import uic, Qtcore
+from PyQt5 import uic, QtCore
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
+# from PySide2.QtGui import *
+# from PySide2.QtCore import *
+# from PySide2.QtWidgets import *
+
 
 import thumnail
 import filelist
@@ -58,13 +62,26 @@ class WindowClass(QMainWindow, form_class):
         self.tray_icon.setIcon(QIcon('icon.png'))
         show_action = QAction("열기", self)
         quit_action = QAction("종료", self)
-        show_action.triggered.connect(self.show)
+        show_action.triggered.connect(self.trayopenclick)
         quit_action.triggered.connect(qApp.quit)
         tray_menu = QMenu()
         tray_menu.addAction(show_action)
         tray_menu.addAction(quit_action)
         self.tray_icon.setContextMenu(tray_menu)
-    
+        trayDouble = self.tray_icon.activated
+        trayDouble.connect(self.trayDoubleclick)
+        # test = self.tray_icon.activated([2])
+        # test.triggered.connect(self.show)
+
+    def trayDoubleclick(self, reason):
+        if reason == 2:
+            self.show()
+            self.tray_icon.hide()
+
+    def trayopenclick(self):
+        self.show()
+        self.tray_icon.hide()
+
     def ClosebuttonFunction(self):
         self.hide()
         self.tray_icon.show()
