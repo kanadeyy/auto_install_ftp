@@ -30,6 +30,10 @@ class WindowClass(QMainWindow, form_class):
         self.setWindowTitle("Remote install software")
         self.setWindowIcon(QIcon('icon.png'))
 
+        # Close Button 이미지 만들기
+        self.CloseButton.setStyleSheet('image:url(Close.png);border:0px;')
+
+        #ID,IP주소 리스트에 저장
         ID = PC_ID.file_read()
         IP,MAC = getipmac.getipmac()
         self.iptext.append(IP)
@@ -40,6 +44,7 @@ class WindowClass(QMainWindow, form_class):
         # 트리거 만들기
         self.okbutton.clicked.connect(self.okbuttonFunction)
         self.IP_Change_Edit.returnPressed.connect(self.okbuttonFunction)
+        self.CloseButton.clicked.connect(self.CloseButtonFunction)
 
         # 제목표시줄 없애기
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
@@ -66,6 +71,9 @@ class WindowClass(QMainWindow, form_class):
 
     def notify(self, title, message):
         self.tray_icon.showMessage(title, message, 1, 3000)
+
+    def CloseButtonFunction(self):
+        self.hide()
 
     def okbuttonFunction(self):
         ID_ = self.IP_Change_Edit.text()
