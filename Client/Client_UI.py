@@ -1,8 +1,8 @@
 import sys
 
-from PyQt5.QtGui import QIcon
+from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
-from PyQt5 import uic
+from PyQt5 import uic, QtCore
 import getipmac
 import PC_ID
 import UDP_Server
@@ -20,6 +20,12 @@ class WindowClass(QMainWindow, form_class):
         super().__init__()
         self.setupUi(self)
 
+        # 배경만들기
+        image = QImage("thumbnail.png")
+        palette = QPalette()
+        palette.setBrush(10, QBrush(image))
+        self.setPalette(palette)
+
         #아이콘, 제목
         self.setWindowTitle("Remote install software")
         self.setWindowIcon(QIcon('icon.png'))
@@ -31,9 +37,12 @@ class WindowClass(QMainWindow, form_class):
 
         ID_ = self.IP_Change_Edit.text()
 
+        # 트리거 만들기
         self.okbutton.clicked.connect(self.okbuttonFunction)
         self.IP_Change_Edit.returnPressed.connect(self.okbuttonFunction)
 
+        # 제목표시줄 없애기
+        self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
 
         #트레이아이콘
         self.tray_icon = QSystemTrayIcon(self)
@@ -47,7 +56,13 @@ class WindowClass(QMainWindow, form_class):
         tray_menu.addAction(show_action)
         tray_menu.addAction(quit_action)
         self.tray_icon.setContextMenu(tray_menu)
+        trayDouble = self.tray_icon.activated
+        trayDouble.connect(self.trayDoubleclick)
         self.tray_icon.show()
+
+    def trayDoubleclick(self, reason):
+        if reason == 2:
+            self.show()
 
     def notify(self, title, message):
         self.tray_icon.showMessage(title, message, 1, 3000)
